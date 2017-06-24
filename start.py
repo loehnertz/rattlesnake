@@ -6,6 +6,9 @@ import pyaudio
 pa = pyaudio.PyAudio()
 # Size of each read in chunk
 chunk = 1
+width = 2
+channels = 2
+sample_rate = 44100
 
 
 def main():
@@ -22,15 +25,52 @@ def main():
 
 
 def filemode():
+    # Give some feedback
+    print('Now cancelling the file')
+
     # Read in the given file
     (waveform, stream) = readin(sys.argv[2])
 
-    # Start the playback of both audio streams
-    playback(waveform, stream)
+    # Read a first chunk and continue to do so for as long as there is a stream to read in
+    original = waveform.readframes(chunk)
+    while original != '':
+        # Invert the original audio
+        inverted = invert(original)
+
+        # Play back both audios
+        stream.write(original)
+        stream.write(inverted)
+
+        original = waveform.readframes(chunk)
+
+    # Stop the stream after there is no more data to read and terminate PyAudio
+    stream.stop_stream()
+    stream.close()
+    pa.terminate()
 
 
 def livemode():
-    print('livemode')
+    # Start live recording
+    print('Now cancelling live')
+
+    stream = pa.open(
+        format=pa.get_format_from_width(width),
+        channels=channels,
+        rate=sample_rate,
+        frames_per_buffer=chunk,
+        input=True,
+        output=True
+    )
+
+    for i in range(0, int(sample_rate / chunk * sys.maxunicode)):
+        # Read in the live audio for 12.5 days
+        original = stream.read(chunk)
+
+        # Invert the original audio
+        inverted = invert(original)
+
+        # Play back the inverted audio
+        stream.write(inverted, chunk)
 
 
 def readin(file):
@@ -38,30 +78,14 @@ def readin(file):
     waveform = wave.open(file, 'r')
 
     # Load PyAudio and create a useable waveform object
-    stream = pa.open(format=pa.get_format_from_width(waveform.getsampwidth()),
-                     channels=waveform.getnchannels(),
-                     rate=waveform.getframerate(),
-                     output=True)
+    stream = pa.open(
+        format=pa.get_format_from_width(waveform.getsampwidth()),
+        channels=waveform.getnchannels(),
+        rate=waveform.getframerate(),
+        output=True
+    )
 
     return waveform, stream
-
-
-def playback(audio, stream):
-    # Read a first chunk and continue to do so for as long as there is a stream to read in
-    original = audio.readframes(chunk)
-    while original != '':
-        inverted = invert(original)
-
-        # Play back the audio data
-        stream.write(original)
-        stream.write(inverted)
-
-        original = audio.readframes(chunk)
-
-    # Stop the stream after there is no more data to read and terminate PyAudio
-    stream.stop_stream()
-    stream.close()
-    pa.terminate()
 
 
 def invert(data):
