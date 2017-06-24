@@ -5,7 +5,7 @@ import sys
 
 def playback():
     # Size of each read in chunk
-    chunk = 1024
+    chunk = 1
 
     # Open the waveform from the command argument
     waveform = wave.open(sys.argv[1], 'r')
