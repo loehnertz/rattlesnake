@@ -5,10 +5,10 @@ import pyaudio
 # PyAudio object
 pa = pyaudio.PyAudio()
 # Size of each read in chunk
-chunk = 1
-width = 2
-channels = 2
-sample_rate = 44100
+CHUNK = 1
+WIDTH = 2
+CHANNELS = 2
+SAMPLE_RATE = 44100
 
 
 def main():
@@ -32,7 +32,7 @@ def filemode():
     (waveform, stream) = readin(sys.argv[2])
 
     # Read a first chunk and continue to do so for as long as there is a stream to read in
-    original = waveform.readframes(chunk)
+    original = waveform.readframes(CHUNK)
     while original != '':
         # Invert the original audio
         inverted = invert(original)
@@ -41,7 +41,7 @@ def filemode():
         stream.write(original)
         stream.write(inverted)
 
-        original = waveform.readframes(chunk)
+        original = waveform.readframes(CHUNK)
 
     # Stop the stream after there is no more data to read and terminate PyAudio
     stream.stop_stream()
@@ -54,23 +54,23 @@ def livemode():
     print('Now cancelling live')
 
     stream = pa.open(
-        format=pa.get_format_from_width(width),
-        channels=channels,
-        rate=sample_rate,
-        frames_per_buffer=chunk,
+        format=pa.get_format_from_width(WIDTH),
+        channels=CHANNELS,
+        rate=SAMPLE_RATE,
+        frames_per_buffer=CHUNK,
         input=True,
         output=True
     )
 
-    for i in range(0, int(sample_rate / chunk * sys.maxunicode)):
+    for i in range(0, int(SAMPLE_RATE / CHUNK * sys.maxunicode)):
         # Read in the live audio for 12.5 days
-        original = stream.read(chunk)
+        original = stream.read(CHUNK)
 
         # Invert the original audio
         inverted = invert(original)
 
         # Play back the inverted audio
-        stream.write(inverted, chunk)
+        stream.write(inverted, CHUNK)
 
 
 def readin(file):
