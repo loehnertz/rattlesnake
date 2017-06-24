@@ -9,22 +9,28 @@ chunk = 1
 
 
 def main():
-    (waveform, stream) = readin(sys.argv[1])
+    # Mode the program was run in
+    mode = sys.argv[1]
 
-    # Read a first chunk and continue to do so for as long as there is a stream to read in
-    original = waveform.readframes(chunk)
-    while original != '':
-        inverted = invert(original)
+    # Execute the chosen mode
+    if mode == '--file' or mode == '-f':
+        filemode()
+    elif mode == '--live' or mode == '-l':
+        livemode()
+    else:
+        print('Please either choose file-mode or live-mode')
 
-        playback(stream, original)
-        playback(stream, inverted)
 
-        original = waveform.readframes(chunk)
+def filemode():
+    # Read in the given file
+    (waveform, stream) = readin(sys.argv[2])
 
-    # Stop the stream after there is no more data to read and terminate PyAudio
-    stream.stop_stream()
-    stream.close()
-    pa.terminate()
+    # Start the playback of both audio streams
+    playback(waveform, stream)
+
+
+def livemode():
+    print('livemode')
 
 
 def readin(file):
@@ -40,6 +46,24 @@ def readin(file):
     return waveform, stream
 
 
+def playback(audio, stream):
+    # Read a first chunk and continue to do so for as long as there is a stream to read in
+    original = audio.readframes(chunk)
+    while original != '':
+        inverted = invert(original)
+
+        # Play back the audio data
+        stream.write(original)
+        stream.write(inverted)
+
+        original = audio.readframes(chunk)
+
+    # Stop the stream after there is no more data to read and terminate PyAudio
+    stream.stop_stream()
+    stream.close()
+    pa.terminate()
+
+
 def invert(data):
     # Convert the bytestring into an integer
     intwave = int.from_bytes(data, byteorder='big')
@@ -49,11 +73,6 @@ def invert(data):
     inverted = intwave.to_bytes(4, byteorder='big')
     # Return the inverted audio data
     return inverted
-
-
-def playback(stream, data):
-    # Play back the audio data
-    stream.write(data)
 
 
 main()
