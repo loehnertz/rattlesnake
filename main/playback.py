@@ -3,7 +3,7 @@ import wave
 import sys
 
 
-def playback():
+def invert():
     # Size of each read in chunk
     chunk = 1
 
@@ -20,13 +20,21 @@ def playback():
     # Read a first chunk and continue to do so for as long as there is a stream to read in
     data = waveform.readframes(chunk)
     while data != '':
-        # Write the read-in data into the PyAudio object to play it back
+        # Convert the bytestring into an integer
+        intwave = int.from_bytes(data, byteorder='big')
+        # Invert the integer
+        intwave ^= 2147483647
+        # Convert the integer back into a bytestring
+        inverted = intwave.to_bytes(4, byteorder='big')
+
+        # Play back the original audio data
         stream.write(data)
+        # Play back the inverted audio data
+        stream.write(inverted)
+        # Grab another chunk of data for the next iteration
         data = waveform.readframes(chunk)
 
     # Stop the stream after there is no more data to read and terminate PyAudio
     stream.stop_stream()
     stream.close()
     pa.terminate()
-
-playback()
