@@ -20,7 +20,7 @@ Clone the repo and install the requirements via pip:
 
 ## Usage
 Run the python script from your terminal and specify the mode you want to use:    
-`python start.py --mode`
+`python3 start.py --mode`
 
 Argument     | Description
 --------     | -----------
