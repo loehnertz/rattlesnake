@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 # PyAudio object variable
 pa = pyaudio.PyAudio()
 
+# The mode the user chose with a script argument
+MODE = sys.argv[1]
 # Size of each read-in chunk
 CHUNK = 1
 # Amount of channels of the live recording
@@ -17,28 +19,28 @@ CHANNELS = 2
 WIDTH = 2
 # Sample rate in Hz of the live recording
 SAMPLE_RATE = 44100
-# Set how often plot data will be saved (every nth CHUNK)
-try:
-    NTH_ITERATION = int(sys.argv[2])
-except (ValueError, IndexError):
-    print('The second argument has to be a number')
-    sys.exit()
+# Set how often data for the result will be saved (every nth CHUNK)
+if MODE != '-p' and MODE != '--playback':
+    try:
+        NTH_ITERATION = int(sys.argv[2])
+    except (ValueError, IndexError):
+        print('The second argument has to be a number')
+        sys.exit()
 
 
 def main():
-    # Mode the program was run in
-    mode = sys.argv[1]
-
     # Execute the chosen mode
-    if mode == '--file' or mode == '-f':
-        filemode()
-    elif mode == '--live' or mode == '-l':
-        livemode()
+    if MODE == '--file' or MODE == '-f':
+        file_mode()
+    elif MODE == '--live' or MODE == '-l':
+        live_mode()
+    elif MODE == '--playback' or MODE == '-p':
+        playback_mode()
     else:
-        print('Please either choose file-mode or live-mode with the first argument')
+        print('Please either choose file-mode, live-mode or playback-mode with the first argument')
 
 
-def filemode():
+def file_mode():
     # Read in the given file
     (waveform, stream) = readin(sys.argv[3])
 
@@ -98,7 +100,7 @@ def filemode():
     sys.exit()
 
 
-def livemode():
+def live_mode():
     # Start live recording
     print('Now noise-cancelling live')
 
@@ -151,6 +153,37 @@ def livemode():
         stream.close()
         pa.terminate()
         sys.exit()
+
+
+def playback_mode():
+    # Read in the given file
+    (waveform, stream) = readin(sys.argv[2])
+
+    # Give some feedback
+    print('Now playing back the file')
+
+    # Read a first chunk and continue to do so for as long as there is a stream to read in
+    original = waveform.readframes(CHUNK)
+    while original != b'':
+        try:
+            # Play back the audio
+            stream.write(original)
+
+            # Read in the next chunk of data
+            original = waveform.readframes(CHUNK)
+        except (KeyboardInterrupt, SystemExit):
+            break
+
+    # Stop the stream after there is no more data to read
+    stream.stop_stream()
+    stream.close()
+
+    # Outputting feedback regarding the end of the file
+    print('Finished playing back the file')
+
+    # Terminate PyAudio as well as the program
+    pa.terminate()
+    sys.exit()
 
 
 def readin(file):
