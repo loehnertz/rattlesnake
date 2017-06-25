@@ -1,5 +1,7 @@
 import sys
+import math
 import wave
+import struct
 import pyaudio
 
 # PyAudio object variable
@@ -35,6 +37,12 @@ def filemode():
     # Read in the given file
     (waveform, stream) = readin(sys.argv[2])
 
+    # Collecting the volume levels in decibels in a list
+    decibel_levels = []
+
+    # Counting the iterations of the while-loop
+    iteration = 0
+
     # Read a first chunk and continue to do so for as long as there is a stream to read in
     original = waveform.readframes(CHUNK)
     while original != b'':
@@ -45,19 +53,33 @@ def filemode():
         stream.write(original)
         stream.write(inverted)
 
+        # On every 1000th iteration append the difference between the level of the source audio and the inverted one
+        if iteration % 1000 == 0:
+            decibel_levels.append(calculate_decibel(original) - calculate_decibel(inverted))
+
+        # Read in the next chunk of data
         original = waveform.readframes(CHUNK)
+
+        # Add up one to the iterations
+        iteration += 1
 
     # Outputting feedback regarding the end of the file
     print('Finished noise-cancelling the file')
-    # Stop the stream after there is no more data to read and terminate PyAudio
+
+    # Stop the stream after there is no more data to read
     stream.stop_stream()
     stream.close()
+
+    # Plot the results
+    plot_results(decibel_levels)
+
+    # Terminate PyAudio
     pa.terminate()
 
 
 def livemode():
     # Start live recording
-    print('Now cancelling live')
+    print('Now noise-cancelling live')
 
     # Create a new PyAudio object using the preset constants
     stream = pa.open(
@@ -69,16 +91,26 @@ def livemode():
         output=True
     )
 
+    # Collecting the volume levels in decibels in a list
+    decibel_levels = []
+
     # Grab a chunk of data in iterations according to the preset constants
-    for i in range(0, int(SAMPLE_RATE / CHUNK * sys.maxunicode)):
-        # Read in a chunk of live audio on each iteration
-        original = stream.read(CHUNK)
+    try:
+        for i in range(0, int(SAMPLE_RATE / CHUNK * sys.maxunicode)):
+            # Read in a chunk of live audio on each iteration
+            original = stream.read(CHUNK)
 
-        # Invert the original audio
-        inverted = invert(original)
+            # Invert the original audio
+            inverted = invert(original)
 
-        # Play back the inverted audio
-        stream.write(inverted, CHUNK)
+            # Play back the inverted audio
+            stream.write(inverted, CHUNK)
+
+            # On every 1000th iteration append the difference between the level of the source audio and the inverted one
+            if i % 1000 == 0:
+                decibel_levels.append(calculate_decibel(original) - calculate_decibel(inverted))
+    except (KeyboardInterrupt, SystemExit):
+        plot_results(decibel_levels)
 
 
 def readin(file):
@@ -119,6 +151,19 @@ def invert(data):
     inverted = intwave.to_bytes(4, byteorder='big')
     # Return the inverted audio data
     return inverted
+
+
+def calculate_decibel(data):
+    count = len(data) / 2
+    form = "%dh" % count
+    shorts = struct.unpack(form, data)
+    sum_squares = 0.0
+    for sample in shorts:
+        n = sample * (1.0/32768)
+        sum_squares += n * n
+    rms = math.sqrt(sum_squares / count) + 0.0001
+    db = 20 * math.log10(rms)
+    return db
 
 
 main()

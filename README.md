@@ -24,7 +24,7 @@ Run the python script from your terminal and specify the mode you want to use:
 
 Argument     | Description
 --------     | -----------
---live (-l)  | This is the 'live-mode' which records audio and inverts it on-the-fly. It also detects the volume level of the source and adjust itself to it.
+--live (-l)  | This is the 'live-mode' which records audio and inverts it on-the-fly.
 --file (-f)  | This is the more basic 'file-mode' which expects a wave audio file (.wav) as a second argument. It then plays back the original file as well as the inverted audio to effectively cancel it out.
 
 Both modes are self-adjusting themselves during execution.
