@@ -2,12 +2,16 @@ import sys
 import wave
 import pyaudio
 
-# PyAudio object
+# PyAudio object variable
 pa = pyaudio.PyAudio()
-# Size of each read in chunk
+
+# Size of each read-in chunk
 CHUNK = 1
+# Sample width of the live recording
 WIDTH = 2
+# Amount of channels of the live recording
 CHANNELS = 2
+# Sample rate in Hz of the live recording
 SAMPLE_RATE = 44100
 
 
@@ -53,6 +57,7 @@ def livemode():
     # Start live recording
     print('Now cancelling live')
 
+    # Create a new PyAudio object using the preset constants
     stream = pa.open(
         format=pa.get_format_from_width(WIDTH),
         channels=CHANNELS,
@@ -62,8 +67,9 @@ def livemode():
         output=True
     )
 
+    # Grab a chunk of data in iterations according to the preset constants
     for i in range(0, int(SAMPLE_RATE / CHUNK * sys.maxunicode)):
-        # Read in the live audio for 12.5 days
+        # Read in a chunk of live audio on each iteration
         original = stream.read(CHUNK)
 
         # Invert the original audio
