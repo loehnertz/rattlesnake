@@ -28,7 +28,7 @@ Run the python script from your terminal and specify the mode you want to use:
 Argument        | Description
 --------        | -----------
 --live (-l)     | This is the 'live-mode' which records audio and inverts it on-the-fly.
---file (-f)     | This is the more basic 'file-mode' which expects a wave audio file (.wav) as a second argument. It then plays back the original file as well as the inverted audio to effectively cancel it out.
+--file (-f)     | This is the more basic 'file-mode' which expects a wave audio file (.wav) as the third argument. It then plays back the original file as well as the inverted audio to effectively cancel both out.
 --playback (-p) | This is the 'playback-mode' that does exactly what one would expect. It can be used to test an existing file.
 nth_iteration   | This argument is required and needs to be a number. It specifies on which nth iterations data is saved for calculating and plotting the results. The lower the value, the more precise the result.
 
