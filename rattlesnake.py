@@ -17,7 +17,7 @@ CHANNELS = 2
 WIDTH = 2
 # Sample rate in Hz of the live recording
 SAMPLE_RATE = 44100
-# Set how often plot data will be saved (every nth CHUNK) - the lower the number, the more precise the result
+# Set how often plot data will be saved (every nth CHUNK)
 try:
     NTH_ITERATION = int(sys.argv[2])
 except (ValueError, IndexError):
