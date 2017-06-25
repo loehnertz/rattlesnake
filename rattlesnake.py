@@ -65,9 +65,10 @@ def file_mode():
             # Calculate the difference of the source and the inverted audio
             difference = calculate_difference(original, inverted)
 
-            # Play back both audios
-            stream.write(original)
-            stream.write(inverted)
+            # Play back the audio stream of both on every second byte to preserve the original speed of the recording
+            if iteration % 2 == 0:
+                stream.write(original)
+                stream.write(inverted)
 
             # On every nth iteration append the difference between the level of the source audio and the inverted one
             if iteration % NTH_ITERATION == 0:
