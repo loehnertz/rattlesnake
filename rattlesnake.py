@@ -38,11 +38,11 @@ def main():
 
 
 def filemode():
-    # Give some feedback
-    print('Now noise-cancelling the file')
-
     # Read in the given file
     (waveform, stream) = readin(sys.argv[3])
+
+    # Give some feedback
+    print('Now noise-cancelling the file')
 
     # Collecting the volume levels in decibels in a list
     decibel_levels = []
@@ -148,7 +148,14 @@ def readin(file):
     """
 
     # Open the waveform from the command argument
-    waveform = wave.open(file, 'r')
+    try:
+        waveform = wave.open(file, 'r')
+    except wave.Error:
+        print('The program can only process wave audio files (.wav)')
+        sys.exit()
+    except FileNotFoundError:
+        print('The chosen file does not exist')
+        sys.exit()
 
     # Load PyAudio and create a useable waveform object
     stream = pa.open(
