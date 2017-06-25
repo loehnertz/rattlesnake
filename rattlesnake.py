@@ -16,6 +16,8 @@ CHANNELS = 2
 WIDTH = 2
 # Sample rate in Hz of the live recording
 SAMPLE_RATE = 44100
+# Set how often plot data will be saved (every nth CHUNK) - the lower the number, the more precise the result
+NTH_ITERATION = int(sys.argv[2])
 
 
 def main():
@@ -36,7 +38,7 @@ def filemode():
     print('Now noise-cancelling the file')
 
     # Read in the given file
-    (waveform, stream) = readin(sys.argv[2])
+    (waveform, stream) = readin(sys.argv[3])
 
     # Collecting the volume levels in decibels in a list
     decibel_levels = []
@@ -54,8 +56,8 @@ def filemode():
         stream.write(original)
         stream.write(inverted)
 
-        # On every 1000th iteration append the difference between the level of the source audio and the inverted one
-        if iteration % 1000 == 0:
+        # On every nth iteration append the difference between the level of the source audio and the inverted one
+        if iteration % NTH_ITERATION == 0:
             # Calculate the difference of the source and the inverted audio
             difference = calculate_decibel(original) - calculate_decibel(inverted)
             # Print the current difference
@@ -77,7 +79,7 @@ def filemode():
     stream.close()
 
     # Plot the results
-    plot_results(decibel_levels)
+    plot_results(decibel_levels, NTH_ITERATION)
 
     # Terminate PyAudio as well as the program
     pa.terminate()
@@ -113,8 +115,8 @@ def livemode():
             # Play back the inverted audio
             stream.write(inverted, CHUNK)
 
-            # On every 1000th iteration append the difference between the level of the source audio and the inverted one
-            if i % 3000 == 0:
+            # On every nth iteration append the difference between the level of the source audio and the inverted one
+            if i % NTH_ITERATION == 0:
                 # Calculate the difference of the source and the inverted audio
                 difference = calculate_decibel(original) - calculate_decibel(inverted)
                 # Print the current difference
@@ -125,7 +127,7 @@ def livemode():
         # Outputting feedback regarding the end of the file
         print('Finished noise-cancelling the file')
         # Plot the results
-        plot_results(decibel_levels)
+        plot_results(decibel_levels, NTH_ITERATION)
         # Terminate the program
         sys.exit()
 
@@ -191,15 +193,16 @@ def calculate_decibel(data):
     return db
 
 
-def plot_results(data):
+def plot_results(data, nth_iteration):
     """
     Plots the list it receives and cuts off the first ten entries to circumvent the plotting of initial silence
 
     :param data: A list of data to be plotted
+    :param nth_iteration: Used for the label of the x axis
     """
 
     plt.plot(data[10:])
-    plt.xlabel('Time (every 1000th byte)')
+    plt.xlabel('Time (every {}th {} byte)'.format(nth_iteration, CHUNK))
     plt.ylabel('Volume level (in dB)')
     plt.show()
 
