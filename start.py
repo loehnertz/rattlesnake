@@ -7,10 +7,10 @@ pa = pyaudio.PyAudio()
 
 # Size of each read-in chunk
 CHUNK = 1
-# Sample width of the live recording
-WIDTH = 2
 # Amount of channels of the live recording
 CHANNELS = 2
+# Sample width of the live recording
+WIDTH = 2
 # Sample rate in Hz of the live recording
 SAMPLE_RATE = 44100
 
@@ -47,8 +47,9 @@ def filemode():
 
         original = waveform.readframes(CHUNK)
 
-    # Stop the stream after there is no more data to read and terminate PyAudio
+    # Outputting feedback regarding the end of the file
     print('Finished noise-cancelling the file')
+    # Stop the stream after there is no more data to read and terminate PyAudio
     stream.stop_stream()
     stream.close()
     pa.terminate()
