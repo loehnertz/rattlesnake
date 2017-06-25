@@ -30,14 +30,14 @@ def main():
 
 def filemode():
     # Give some feedback
-    print('Now cancelling the file')
+    print('Now noise-cancelling the file')
 
     # Read in the given file
     (waveform, stream) = readin(sys.argv[2])
 
     # Read a first chunk and continue to do so for as long as there is a stream to read in
     original = waveform.readframes(CHUNK)
-    while original != '':
+    while original != b'':
         # Invert the original audio
         inverted = invert(original)
 
