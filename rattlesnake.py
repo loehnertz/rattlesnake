@@ -168,6 +168,12 @@ def calculate_decibel(data):
 
 
 def plot_results(data):
+    """
+    Plots the list it receives and cuts off the first ten entries to circumvent the plotting of initial silence
+
+    :param data: A list of data to be plotted
+    """
+
     plt.plot(data[10:])
     plt.xlabel('Time (every 1000th byte)')
     plt.ylabel('Volume level (in dB)')
