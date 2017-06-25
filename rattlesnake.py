@@ -62,10 +62,11 @@ def filemode():
             stream.write(original)
             stream.write(inverted)
 
+            # Calculate the difference of the source and the inverted audio
+            difference = calculate_decibel(original) - calculate_decibel(inverted)
+
             # On every nth iteration append the difference between the level of the source audio and the inverted one
             if iteration % NTH_ITERATION == 0:
-                # Calculate the difference of the source and the inverted audio
-                difference = calculate_decibel(original) - calculate_decibel(inverted)
                 # Print the current difference
                 print('Difference (in dB): {}'.format(difference))
                 # Append the difference to the list used for the plot
@@ -123,13 +124,14 @@ def livemode():
             # Invert the original audio
             inverted = invert(original)
 
+            # Calculate the difference of the source and the inverted audio
+            difference = calculate_decibel(original) - calculate_decibel(inverted)
+
             # Play back the inverted audio
             stream.write(inverted, CHUNK)
 
             # On every nth iteration append the difference between the level of the source audio and the inverted one
             if i % NTH_ITERATION == 0:
-                # Calculate the difference of the source and the inverted audio
-                difference = calculate_decibel(original) - calculate_decibel(inverted)
                 # Print the current difference
                 print('Difference (in dB): {}'.format(difference))
                 # Append the difference to the list used for the plot
