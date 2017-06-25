@@ -3,6 +3,7 @@ import math
 import wave
 import struct
 import pyaudio
+import matplotlib.pyplot as plt
 
 # PyAudio object variable
 pa = pyaudio.PyAudio()
@@ -164,6 +165,13 @@ def calculate_decibel(data):
     rms = math.sqrt(sum_squares / count) + 0.0001
     db = 20 * math.log10(rms)
     return db
+
+
+def plot_results(data):
+    plt.plot(data[10:])
+    plt.xlabel('Time (every 1000th byte)')
+    plt.ylabel('Volume level (in dB)')
+    plt.show()
 
 
 main()
