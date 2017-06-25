@@ -3,6 +3,7 @@ import math
 import wave
 import struct
 import pyaudio
+import numpy as np
 import matplotlib.pyplot as plt
 
 # PyAudio object variable
@@ -85,6 +86,9 @@ def filemode():
     # Outputting feedback regarding the end of the file
     print('Finished noise-cancelling the file')
 
+    # Calculate and output the absolute median difference level
+    print('Difference - Median (in dB): {}'.format(np.fabs(np.median(decibel_levels))))
+
     # Plot the results
     plot_results(decibel_levels, NTH_ITERATION)
 
@@ -133,8 +137,13 @@ def livemode():
     except (KeyboardInterrupt, SystemExit):
         # Outputting feedback regarding the end of the file
         print('Finished noise-cancelling the file')
+
+        # Calculate and output the absolute median difference level
+        print('Difference - Median (in dB): {}'.format(np.fabs(np.median(decibel_levels))))
+
         # Plot the results
         plot_results(decibel_levels, NTH_ITERATION)
+
         # Terminate the program
         stream.stop_stream()
         stream.close()
