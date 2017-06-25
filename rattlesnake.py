@@ -221,8 +221,15 @@ def calculate_decibel(data):
     return db
 
 
-def calculate_difference(value_1, value_2):
-    difference = calculate_decibel(value_1) - calculate_decibel(value_2)
+def calculate_difference(data_1, data_2):
+    """
+    Calculates the difference level in decibel between the received binary inputs
+
+    :param data_1: The first binary digit
+    :param data_2: The second binary digit
+    :return difference: The calculated difference level (in dB)
+    """
+    difference = calculate_decibel(data_1) - calculate_decibel(data_2)
     return difference
 
 
