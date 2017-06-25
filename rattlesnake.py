@@ -61,7 +61,7 @@ def filemode():
             # Calculate the difference of the source and the inverted audio
             difference = calculate_decibel(original) - calculate_decibel(inverted)
             # Print the current difference
-            print(difference)
+            print('Difference (in dB): {}'.format(difference))
             # Append the difference to the list used for the plot
             decibel_levels.append(difference)
 
@@ -120,7 +120,7 @@ def livemode():
                 # Calculate the difference of the source and the inverted audio
                 difference = calculate_decibel(original) - calculate_decibel(inverted)
                 # Print the current difference
-                print(difference)
+                print('Difference (in dB): {}'.format(difference))
                 # Append the difference to the list used for the plot
                 decibel_levels.append(difference)
     except (KeyboardInterrupt, SystemExit):
