@@ -58,12 +58,12 @@ def filemode():
             # Invert the original audio
             inverted = invert(original)
 
+            # Calculate the difference of the source and the inverted audio
+            difference = calculate_difference(original, inverted)
+
             # Play back both audios
             stream.write(original)
             stream.write(inverted)
-
-            # Calculate the difference of the source and the inverted audio
-            difference = calculate_decibel(original) - calculate_decibel(inverted)
 
             # On every nth iteration append the difference between the level of the source audio and the inverted one
             if iteration % NTH_ITERATION == 0:
@@ -125,7 +125,7 @@ def livemode():
             inverted = invert(original)
 
             # Calculate the difference of the source and the inverted audio
-            difference = calculate_decibel(original) - calculate_decibel(inverted)
+            difference = calculate_difference(original, inverted)
 
             # Play back the inverted audio
             stream.write(inverted, CHUNK)
@@ -214,11 +214,16 @@ def calculate_decibel(data):
     shorts = struct.unpack(form, data)
     sum_squares = 0.0
     for sample in shorts:
-        n = sample * (1.0/32768)
+        n = sample * (1.0 / 32768)
         sum_squares += n * n
     rms = math.sqrt(sum_squares / count) + 0.0001
     db = 20 * math.log10(rms)
     return db
+
+
+def calculate_difference(value_1, value_2):
+    difference = calculate_decibel(value_1) - calculate_decibel(value_2)
+    return difference
 
 
 def plot_results(data, nth_iteration):
