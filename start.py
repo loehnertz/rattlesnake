@@ -48,6 +48,7 @@ def filemode():
         original = waveform.readframes(CHUNK)
 
     # Stop the stream after there is no more data to read and terminate PyAudio
+    print('Finished noise-cancelling the file')
     stream.stop_stream()
     stream.close()
     pa.terminate()
