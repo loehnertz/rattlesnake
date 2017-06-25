@@ -80,6 +80,13 @@ def livemode():
 
 
 def readin(file):
+    """
+    Reads in the given wave file and returns a new PyAudio stream object from it.
+
+    :param file: The path to the file to read in
+    :return (waveform, stream): (The actual audio data as a waveform, the PyAudio object for said data)
+    """
+
     # Open the waveform from the command argument
     waveform = wave.open(file, 'r')
 
@@ -95,6 +102,13 @@ def readin(file):
 
 
 def invert(data):
+    """
+    Inverts the byte data it received utilizing an XOR operation.
+
+    :param data: A chunk of byte data
+    :return inverted: The same size of chunked data inverted bitwise
+    """
+
     # Convert the bytestring into an integer
     intwave = int.from_bytes(data, byteorder='big')
     # Invert the integer
