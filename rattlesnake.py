@@ -17,7 +17,11 @@ WIDTH = 2
 # Sample rate in Hz of the live recording
 SAMPLE_RATE = 44100
 # Set how often plot data will be saved (every nth CHUNK) - the lower the number, the more precise the result
-NTH_ITERATION = int(sys.argv[2])
+try:
+    NTH_ITERATION = int(sys.argv[2])
+except ValueError:
+    print('The second argument has to be a number')
+    sys.exit()
 
 
 def main():
@@ -30,7 +34,7 @@ def main():
     elif mode == '--live' or mode == '-l':
         livemode()
     else:
-        print('Please either choose file-mode or live-mode')
+        print('Please either choose file-mode or live-mode with the first argument')
 
 
 def filemode():
