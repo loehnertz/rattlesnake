@@ -155,6 +155,13 @@ def invert(data):
 
 
 def calculate_decibel(data):
+    """
+    Calculates the volume level in decibel of the given data
+
+    :param data: A bytestring used to calculate the decibel level
+    :return db: The calculated volume level in decibel
+    """
+
     count = len(data) / 2
     form = "%dh" % count
     shorts = struct.unpack(form, data)
