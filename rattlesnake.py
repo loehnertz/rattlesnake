@@ -56,7 +56,12 @@ def filemode():
 
         # On every 1000th iteration append the difference between the level of the source audio and the inverted one
         if iteration % 1000 == 0:
-            decibel_levels.append(calculate_decibel(original) - calculate_decibel(inverted))
+            # Calculate the difference of the source and the inverted audio
+            difference = calculate_decibel(original) - calculate_decibel(inverted)
+            # Print the current difference
+            print(difference)
+            # Append the difference to the list used for the plot
+            decibel_levels.append(difference)
 
         # Read in the next chunk of data
         original = waveform.readframes(CHUNK)
@@ -74,8 +79,9 @@ def filemode():
     # Plot the results
     plot_results(decibel_levels)
 
-    # Terminate PyAudio
+    # Terminate PyAudio as well as the program
     pa.terminate()
+    sys.exit()
 
 
 def livemode():
@@ -108,10 +114,20 @@ def livemode():
             stream.write(inverted, CHUNK)
 
             # On every 1000th iteration append the difference between the level of the source audio and the inverted one
-            if i % 1000 == 0:
-                decibel_levels.append(calculate_decibel(original) - calculate_decibel(inverted))
+            if i % 3000 == 0:
+                # Calculate the difference of the source and the inverted audio
+                difference = calculate_decibel(original) - calculate_decibel(inverted)
+                # Print the current difference
+                print(difference)
+                # Append the difference to the list used for the plot
+                decibel_levels.append(difference)
     except (KeyboardInterrupt, SystemExit):
+        # Outputting feedback regarding the end of the file
+        print('Finished noise-cancelling the file')
+        # Plot the results
         plot_results(decibel_levels)
+        # Terminate the program
+        sys.exit()
 
 
 def readin(file):
@@ -133,6 +149,7 @@ def readin(file):
         output=True
     )
 
+    # Return the waveform as well as the generated PyAudio stream object
     return waveform, stream
 
 
