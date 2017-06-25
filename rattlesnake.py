@@ -53,34 +53,37 @@ def filemode():
     # Read a first chunk and continue to do so for as long as there is a stream to read in
     original = waveform.readframes(CHUNK)
     while original != b'':
-        # Invert the original audio
-        inverted = invert(original)
+        try:
+            # Invert the original audio
+            inverted = invert(original)
 
-        # Play back both audios
-        stream.write(original)
-        stream.write(inverted)
+            # Play back both audios
+            stream.write(original)
+            stream.write(inverted)
 
-        # On every nth iteration append the difference between the level of the source audio and the inverted one
-        if iteration % NTH_ITERATION == 0:
-            # Calculate the difference of the source and the inverted audio
-            difference = calculate_decibel(original) - calculate_decibel(inverted)
-            # Print the current difference
-            print('Difference (in dB): {}'.format(difference))
-            # Append the difference to the list used for the plot
-            decibel_levels.append(difference)
+            # On every nth iteration append the difference between the level of the source audio and the inverted one
+            if iteration % NTH_ITERATION == 0:
+                # Calculate the difference of the source and the inverted audio
+                difference = calculate_decibel(original) - calculate_decibel(inverted)
+                # Print the current difference
+                print('Difference (in dB): {}'.format(difference))
+                # Append the difference to the list used for the plot
+                decibel_levels.append(difference)
 
-        # Read in the next chunk of data
-        original = waveform.readframes(CHUNK)
+            # Read in the next chunk of data
+            original = waveform.readframes(CHUNK)
 
-        # Add up one to the iterations
-        iteration += 1
-
-    # Outputting feedback regarding the end of the file
-    print('Finished noise-cancelling the file')
+            # Add up one to the iterations
+            iteration += 1
+        except (KeyboardInterrupt, SystemExit):
+            break
 
     # Stop the stream after there is no more data to read
     stream.stop_stream()
     stream.close()
+
+    # Outputting feedback regarding the end of the file
+    print('Finished noise-cancelling the file')
 
     # Plot the results
     plot_results(decibel_levels, NTH_ITERATION)
