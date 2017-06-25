@@ -129,6 +129,9 @@ def livemode():
         # Plot the results
         plot_results(decibel_levels, NTH_ITERATION)
         # Terminate the program
+        stream.stop_stream()
+        stream.close()
+        pa.terminate()
         sys.exit()
 
 
