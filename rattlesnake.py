@@ -230,7 +230,7 @@ def invert(data):
     # Convert the bytestring into an integer
     intwave = np.fromstring(data, dtype='>u4')
     # Invert the integer
-    intwave[0] ^= MAX_INT
+    intwave ^= MAX_INT
     # Convert the integer back into a bytestring
     inverted = np.frombuffer(intwave, dtype='b')
     # Return the inverted audio data
