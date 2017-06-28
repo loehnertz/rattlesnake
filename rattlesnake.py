@@ -92,9 +92,6 @@ def file_mode():
     # Outputting feedback regarding the end of the file
     print('Finished noise-cancelling the file')
 
-    # Calculate and output the absolute median difference level
-    print('Difference - Median (in dB): {}'.format(np.fabs(np.median(decibel_levels))))
-
     # Plot the results
     plot_results(decibel_levels, NTH_ITERATION)
 
@@ -144,9 +141,6 @@ def live_mode():
     except (KeyboardInterrupt, SystemExit):
         # Outputting feedback regarding the end of the file
         print('Finished noise-cancelling the file')
-
-        # Calculate and output the absolute median difference level
-        print('Difference - Median (in dB): {}'.format(np.fabs(np.median(decibel_levels))))
 
         # Plot the results
         plot_results(decibel_levels, NTH_ITERATION)
@@ -277,9 +271,17 @@ def plot_results(data, nth_iteration):
     :param nth_iteration: Used for the label of the x axis
     """
 
+    # Plot the data
     plt.plot(data[10:])
+
+    # Label the axes
     plt.xlabel('Time (every {}th {} byte)'.format(nth_iteration, CHUNK))
-    plt.ylabel('Volume level (in dB)')
+    plt.ylabel('Volume level difference (in dB)')
+
+    # Calculate and output the absolute median difference level
+    plt.suptitle('Difference - Median (in dB): {}'.format(np.round(np.fabs(np.median(data)), decimals=5)), fontsize=14)
+
+    # Display the plotted graph
     plt.show()
 
 
