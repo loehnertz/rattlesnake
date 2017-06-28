@@ -12,7 +12,7 @@ pa = pyaudio.PyAudio()
 # The mode the user chose with a script argument
 MODE = sys.argv[1]
 # The maximum size of an integer
-MAX_INT = 2147483647
+MAX_INT = np.iinfo(np.int32).max
 # Size of each read-in chunk
 CHUNK = 1
 # Amount of channels of the live recording
@@ -228,11 +228,11 @@ def invert(data):
     """
 
     # Convert the bytestring into an integer
-    intwave = int.from_bytes(data, byteorder='big')
+    intwave = np.fromstring(data, dtype='>u4')
     # Invert the integer
-    intwave ^= MAX_INT
+    intwave[0] ^= MAX_INT
     # Convert the integer back into a bytestring
-    inverted = intwave.to_bytes(4, byteorder='big')
+    inverted = np.frombuffer(intwave, dtype='b')
     # Return the inverted audio data
     return inverted
 
