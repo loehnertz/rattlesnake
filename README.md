@@ -3,7 +3,7 @@ A python application that does noise cancellation
 
 
 ## Motive
-During the spring semester of 2017 I had to do a project during my studies at university.
+During the spring semester of 2017 I had to do a project for my studies at university.
 The topic was to think of experiments regarding audio, sound, sonic waves etc. that we could prepare for fellow students
 to experience during future lectures with the goal of imparting acoustics to the students.
 During this project I came up with the idea of demonstrating *Active Noise Cancellation* with a custom script.
@@ -33,9 +33,9 @@ Argument        | Description
 --live (-l)     | This is the 'live-mode' which records audio and inverts it on-the-fly.
 --file (-f)     | This is the more basic 'file-mode' which expects a wave audio file (.wav) as the third argument. It then plays back the original file as well as the inverted audio to effectively cancel both out.
 --playback (-p) | This is the 'playback-mode' that does exactly what one would expect. It can be used to test an existing file.
-nth_iteration   | This argument is required and needs to be a number. It specifies on which nth iterations data is saved for calculating and plotting the results. The lower the value, the more precise the result.
+nth_iteration   | This argument is required and needs to be a number. It specifies on which nth iterations data is saved for calculating and plotting the results. The lower the value, the more precise the results.
 
-Both modes are self-adjusting themselves during execution.
+Both noise-cancellation modes are self-adjusting themselves during execution.
 
 
 ## License
