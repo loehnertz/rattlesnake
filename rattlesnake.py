@@ -224,7 +224,7 @@ def invert(data):
     # Convert the bytestring into an integer
     intwave = np.fromstring(data, dtype='>u4')
     # Invert the integer
-    intwave ^= MAX_INT
+    intwave[0] ^= MAX_INT
     # Convert the integer back into a bytestring
     inverted = np.frombuffer(intwave, dtype='b')
     # Return the inverted audio data
@@ -259,6 +259,7 @@ def calculate_difference(data_1, data_2):
     :param data_2: The second binary digit
     :return difference: The calculated difference level (in dB)
     """
+
     difference = calculate_decibel(data_1) - calculate_decibel(data_2)
     return difference
 
