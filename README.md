@@ -3,7 +3,10 @@ A python application that does noise cancellation
 
 
 ## Motive
-*Following soon*
+During the spring semester of 2017 I had to do a project during my studies at university.
+The topic was to think of experiments regarding audio, sound, sonic waves etc. that we could prepare for fellow students
+to experience during future lectures with the goal of imparting acoustics to the students.
+During this project I came up with the idea of demonstrating *Active Noise Cancellation* with a custom script.
 
 
 ## Explanation
