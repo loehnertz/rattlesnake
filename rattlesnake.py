@@ -76,9 +76,14 @@ def file_mode():
         try:
             # Capture if a key was pressed
             pressed_key = stdscr.getch()
+
             # If the 'o' key was pressed toggle the 'active' variable
             if pressed_key == 111:
                 active = not active
+
+            # If the 'x' key was pressed abort the loop
+            if pressed_key == 120:
+                break
 
             # Invert the original audio
             inverted = invert(original)
@@ -87,11 +92,11 @@ def file_mode():
             difference = calculate_difference(original, inverted)
 
             # Play back the audio stream of both on every second byte to preserve the original speed of the recording
-            if iteration % 2 == 0 and active:
+            if active and iteration % 2 == 0:
                 stream.write(original)
                 stream.write(inverted)
             # In case the noise-cancellation is not turned off temporarily
-            elif active is False:
+            elif not active:
                 stream.write(original)
 
             # On every nth iteration append the difference between the level of the source audio and the inverted one
