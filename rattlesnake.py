@@ -31,7 +31,7 @@ SAMPLE_RATE = 44100
 # Set how often data for the result will be saved (every nth CHUNK)
 if MODE != '-p' and MODE != '--playback':
     try:
-        NTH_ITERATION = int(sys.argv[2])
+        NTH_ITERATION = int(sys.argv[3])
     except (ValueError, IndexError):
         print('The second argument has to be a number')
         sys.exit()
@@ -51,7 +51,7 @@ def main():
 
 def file_mode():
     # Read in the given file
-    (waveform, stream) = readin(sys.argv[3])
+    (waveform, stream) = readin(sys.argv[4])
 
     # Give some feedback
     stdscr.addstr('Now noise-cancelling the file')
@@ -124,10 +124,10 @@ def file_mode():
     print('Finished noise-cancelling the file')
 
     # Plot the results
-    plot_results(decibel_levels, NTH_ITERATION)
-
-    # Plot the sonic waves
-    plot_wave_results(total_original, total_inverted, total_difference, NTH_ITERATION)
+    if sys.argv[2] == '--decibel' or sys.argv[2] == '-db':
+        plot_results(decibel_levels, NTH_ITERATION)
+    elif sys.argv[2] == '--wave' or sys.argv[2] == '-wv':
+        plot_wave_results(total_original, total_inverted, total_difference, NTH_ITERATION)
 
     # Revert the changes from 'curses'
     curses.endwin()
