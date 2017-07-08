@@ -54,10 +54,15 @@ def file_mode():
     (waveform, stream) = readin(sys.argv[3])
 
     # Give some feedback
-    print('Now noise-cancelling the file')
+    stdscr.addstr('Now noise-cancelling the file')
 
     # Collecting the volume levels in decibels in a list
     decibel_levels = []
+
+    # Collecting the waves into lists
+    total_original = []
+    total_inverted = []
+    total = []
 
     # Counting the iterations of the while-loop
     iteration = 0
@@ -97,6 +102,11 @@ def file_mode():
                 stdscr.addstr('Difference (in dB): {}\n'.format(difference))
                 # Append the difference to the list used for the plot
                 decibel_levels.append(difference)
+                # Calculate the waves for the graph
+                int_original, int_inverted, int_difference = calculate_wave(original, inverted)
+                total_original.append(int_original)
+                total_inverted.append(int_inverted)
+                total.append(int_difference)
 
             # Read in the next chunk of data
             original = waveform.readframes(CHUNK)
@@ -106,18 +116,21 @@ def file_mode():
         except (KeyboardInterrupt, SystemExit):
             break
 
-    # Revert the changes from 'curses'
-    curses.endwin()
-
     # Stop the stream after there is no more data to read
     stream.stop_stream()
     stream.close()
 
     # Outputting feedback regarding the end of the file
-    print('Finished noise-cancelling the file')
+    stdscr.addstr('Finished noise-cancelling the file')
 
     # Plot the results
     plot_results(decibel_levels, NTH_ITERATION)
+
+    # Plot the sonic waves
+    plot_wave_results(total_original, total_inverted, total, NTH_ITERATION)
+
+    # Revert the changes from 'curses'
+    curses.endwin()
 
     # Terminate PyAudio as well as the program
     pa.terminate()
@@ -288,6 +301,14 @@ def calculate_difference(data_1, data_2):
     return difference
 
 
+def calculate_wave(original, inverted):
+    int_original = np.fromstring(original, np.int16)[0]
+    int_inverted = np.fromstring(inverted, np.int16)[0]
+    int_difference = (int_original + int_inverted)
+
+    return int_original, int_inverted, int_difference
+
+
 def plot_results(data, nth_iteration):
     """
     Plots the list it receives and cuts off the first ten entries to circumvent the plotting of initial silence
@@ -305,6 +326,22 @@ def plot_results(data, nth_iteration):
 
     # Calculate and output the absolute median difference level
     plt.suptitle('Difference - Median (in dB): {}'.format(np.round(np.fabs(np.median(data)), decimals=5)), fontsize=14)
+
+    # Display the plotted graph
+    plt.show()
+
+
+def plot_wave_results(total_original, total_inverted, total, nth_iteration):
+    # Plot the data
+    plt.plot(total_original, 'b')
+    plt.plot(total_inverted, 'r')
+    plt.plot(total, 'g')
+
+    # Label the axes
+    plt.xlabel('Time (every {}th {} byte)'.format(nth_iteration, CHUNK))
+    plt.ylabel('Volume level difference (in dB)')
+
+    # Calculate and output the absolute median difference level
 
     # Display the plotted graph
     plt.show()
