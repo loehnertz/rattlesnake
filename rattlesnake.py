@@ -7,7 +7,7 @@ import pyaudio
 import numpy as np
 import matplotlib.pyplot as plt
 
-# curses configuration
+# 'curses' configuration
 stdscr = curses.initscr()
 stdscr.nodelay(True)
 curses.noecho()
@@ -105,6 +105,9 @@ def file_mode():
             iteration += 1
         except (KeyboardInterrupt, SystemExit):
             break
+
+    # Revert the changes from 'curses'
+    curses.endwin()
 
     # Stop the stream after there is no more data to read
     stream.stop_stream()
