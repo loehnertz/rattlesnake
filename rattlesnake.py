@@ -121,7 +121,7 @@ def file_mode():
     stream.close()
 
     # Outputting feedback regarding the end of the file
-    stdscr.addstr('Finished noise-cancelling the file')
+    print('Finished noise-cancelling the file')
 
     # Plot the results
     plot_results(decibel_levels, NTH_ITERATION)
@@ -348,16 +348,16 @@ def plot_wave_results(total_original, total_inverted, total_difference, nth_iter
     :param nth_iteration: Used for the label of the x axis
     """
 
-    # Plot the data
+    # Plot the three waves
     plt.plot(total_original, 'b')
     plt.plot(total_inverted, 'r')
     plt.plot(total_difference, 'g')
 
     # Label the axes
     plt.xlabel('Time (every {}th {} byte)'.format(nth_iteration, CHUNK))
-    plt.ylabel('Volume level difference (in dB)')
 
     # Calculate and output the absolute median difference level
+    plt.suptitle('Waves: original, inverted, difference', fontsize=14)
 
     # Display the plotted graph
     plt.show()
