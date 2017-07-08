@@ -357,7 +357,7 @@ def plot_wave_results(total_original, total_inverted, total_difference, nth_iter
     plt.xlabel('Time (every {}th {} byte)'.format(nth_iteration, CHUNK))
 
     # Calculate and output the absolute median difference level
-    plt.suptitle('Waves: original, inverted, difference', fontsize=14)
+    plt.suptitle('Waves: original (blue), inverted (red), difference (green)', fontsize=14)
 
     # Display the plotted graph
     plt.show()
