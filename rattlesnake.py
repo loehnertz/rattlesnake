@@ -62,7 +62,7 @@ def file_mode():
     # Collecting the waves into lists
     total_original = []
     total_inverted = []
-    total = []
+    total_difference = []
 
     # Counting the iterations of the while-loop
     iteration = 0
@@ -106,7 +106,7 @@ def file_mode():
                 int_original, int_inverted, int_difference = calculate_wave(original, inverted)
                 total_original.append(int_original)
                 total_inverted.append(int_inverted)
-                total.append(int_difference)
+                total_difference.append(int_difference)
 
             # Read in the next chunk of data
             original = waveform.readframes(CHUNK)
@@ -127,7 +127,7 @@ def file_mode():
     plot_results(decibel_levels, NTH_ITERATION)
 
     # Plot the sonic waves
-    plot_wave_results(total_original, total_inverted, total, NTH_ITERATION)
+    plot_wave_results(total_original, total_inverted, total_difference, NTH_ITERATION)
 
     # Revert the changes from 'curses'
     curses.endwin()
@@ -331,11 +331,20 @@ def plot_results(data, nth_iteration):
     plt.show()
 
 
-def plot_wave_results(total_original, total_inverted, total, nth_iteration):
+def plot_wave_results(total_original, total_inverted, total_difference, nth_iteration):
+    """
+    Plots the three waves of the original sound, the inverted one and their difference
+
+    :param total_original: A list of the original wave data
+    :param total_inverted: A list of the inverted wave data
+    :param total_difference: A list of the difference of 'total_original' and 'total_inverted'
+    :param nth_iteration: Used for the label of the x axis
+    """
+
     # Plot the data
     plt.plot(total_original, 'b')
     plt.plot(total_inverted, 'r')
-    plt.plot(total, 'g')
+    plt.plot(total_difference, 'g')
 
     # Label the axes
     plt.xlabel('Time (every {}th {} byte)'.format(nth_iteration, CHUNK))
