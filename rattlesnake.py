@@ -2,9 +2,16 @@ import sys
 import math
 import wave
 import struct
+import curses
 import pyaudio
 import numpy as np
 import matplotlib.pyplot as plt
+
+# curses configuration
+stdscr = curses.initscr()
+stdscr.nodelay(True)
+curses.noecho()
+curses.cbreak()
 
 # PyAudio object variable
 pa = pyaudio.PyAudio()
@@ -55,10 +62,19 @@ def file_mode():
     # Counting the iterations of the while-loop
     iteration = 0
 
+    # Determines if the noise-cancellation is active
+    active = True
+
     # Read a first chunk and continue to do so for as long as there is a stream to read in
     original = waveform.readframes(CHUNK)
     while original != b'':
         try:
+            # Capture if a key was pressed
+            pressed_key = stdscr.getch()
+            # If the 'o' key was pressed toggle the 'active' variable
+            if pressed_key == 111:
+                active = not active
+
             # Invert the original audio
             inverted = invert(original)
 
@@ -66,14 +82,19 @@ def file_mode():
             difference = calculate_difference(original, inverted)
 
             # Play back the audio stream of both on every second byte to preserve the original speed of the recording
-            if iteration % 2 == 0:
+            if iteration % 2 == 0 and active:
                 stream.write(original)
                 stream.write(inverted)
+            # In case the noise-cancellation is not turned off temporarily
+            elif active is False:
+                stream.write(original)
 
             # On every nth iteration append the difference between the level of the source audio and the inverted one
             if iteration % NTH_ITERATION == 0:
+                # Clear the terminal before outputting the new value
+                stdscr.clear()
                 # Print the current difference
-                print('Difference (in dB): {}'.format(difference))
+                stdscr.addstr('Difference (in dB): {}\n'.format(difference))
                 # Append the difference to the list used for the plot
                 decibel_levels.append(difference)
 
