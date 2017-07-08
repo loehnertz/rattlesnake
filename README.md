@@ -39,8 +39,6 @@ Argument        | Description
 --waves (-wv)   | This argument will cause the 'decibels' to be plotted at the end. (--result)
 nth_iteration   | This argument is required and needs to be a number. It specifies on which nth iterations data is saved for calculating and plotting the results. The lower the value, the more precise the results.
 
-Both noise-cancellation modes are self-adjusting themselves during execution.
-
 
 ## License
 [MIT](LICENSE)
