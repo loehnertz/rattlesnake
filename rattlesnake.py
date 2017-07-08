@@ -126,7 +126,7 @@ def file_mode():
     # Plot the results
     if sys.argv[2] == '--decibel' or sys.argv[2] == '-db':
         plot_results(decibel_levels, NTH_ITERATION)
-    elif sys.argv[2] == '--wave' or sys.argv[2] == '-wv':
+    elif sys.argv[2] == '--waves' or sys.argv[2] == '-wv':
         plot_wave_results(total_original, total_inverted, total_difference, NTH_ITERATION)
 
     # Revert the changes from 'curses'
