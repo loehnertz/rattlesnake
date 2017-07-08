@@ -302,6 +302,13 @@ def calculate_difference(data_1, data_2):
 
 
 def calculate_wave(original, inverted):
+    """
+    Converts the bytestrings it receives into plottable integers and calculates the difference between both
+
+    :param original: A bytestring of sound
+    :param inverted: A bytestring of sound
+    :return int_original, int_inverted, int_difference: A tupel of the three calculated integers
+    """
     int_original = np.fromstring(original, np.int16)[0]
     int_inverted = np.fromstring(inverted, np.int16)[0]
     int_difference = (int_original + int_inverted)
