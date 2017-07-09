@@ -118,6 +118,7 @@ def file_mode():
 
             # Add up one to the iterations
             iteration += 1
+
         except (KeyboardInterrupt, SystemExit):
             break
 
@@ -144,7 +145,7 @@ def file_mode():
 
 def live_mode():
     # Start live recording
-    print('Now noise-cancelling live')
+    stdscr.addstr('Now noise-cancelling live')
 
     # Create a new PyAudio object using the preset constants
     stream = pa.open(
@@ -159,9 +160,28 @@ def live_mode():
     # Collecting the volume levels in decibels in a list
     decibel_levels = []
 
+    # Collecting the waves into lists
+    total_original = []
+    total_inverted = []
+    total_difference = []
+
+    # Determines if the noise-cancellation is active
+    active = True
+
     # Grab a chunk of data in iterations according to the preset constants
     try:
         for i in range(0, int(SAMPLE_RATE / CHUNK * sys.maxunicode)):
+            # Capture if a key was pressed
+            pressed_key = stdscr.getch()
+
+            # If the 'o' key was pressed toggle the 'active' variable
+            if pressed_key == 111:
+                active = not active
+
+            # If the 'x' key was pressed abort the loop
+            if pressed_key == 120:
+                break
+
             # Read in a chunk of live audio on each iteration
             original = stream.read(CHUNK)
 
@@ -176,16 +196,30 @@ def live_mode():
 
             # On every nth iteration append the difference between the level of the source audio and the inverted one
             if i % NTH_ITERATION == 0:
+                # Clear the terminal before outputting the new value
+                stdscr.clear()
                 # Print the current difference
-                print('Difference (in dB): {}'.format(difference))
+                stdscr.addstr('Difference (in dB): {}'.format(difference))
                 # Append the difference to the list used for the plot
                 decibel_levels.append(difference)
+                # Calculate the waves for the graph
+                int_original, int_inverted, int_difference = calculate_wave(original, inverted)
+                total_original.append(int_original)
+                total_inverted.append(int_inverted)
+                total_difference.append(int_difference)
+
     except (KeyboardInterrupt, SystemExit):
         # Outputting feedback regarding the end of the file
         print('Finished noise-cancelling the file')
 
         # Plot the results
-        plot_results(decibel_levels, NTH_ITERATION)
+        if sys.argv[2] == '--decibel' or sys.argv[2] == '-db':
+            plot_results(decibel_levels, NTH_ITERATION)
+        elif sys.argv[2] == '--waves' or sys.argv[2] == '-wv':
+            plot_wave_results(total_original, total_inverted, total_difference, NTH_ITERATION)
+
+        # Revert the changes from 'curses'
+        curses.endwin()
 
         # Terminate the program
         stream.stop_stream()
