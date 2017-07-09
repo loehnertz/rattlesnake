@@ -18,8 +18,6 @@ pa = pyaudio.PyAudio()
 
 # The mode the user chose with a script argument
 MODE = sys.argv[1]
-# The maximum size of an integer
-MAX_INT = np.iinfo(np.int32).max
 # Size of each read-in chunk
 CHUNK = 1
 # Amount of channels of the live recording
@@ -89,11 +87,11 @@ def file_mode():
             inverted = invert(original)
 
             # Play back the audio stream of both on every second byte to preserve the original speed of the recording
-            if active and iteration % 2 == 0:
-                stream.write(original)
-                stream.write(inverted)
-            # In case the noise-cancellation is not turned off temporarily
-            elif not active:
+            if active:
+                mix = mix_samples(original, inverted)
+                stream.write(mix)
+            # In case the noise-cancellation is not turned off temporarily, only play the orignial audio source
+            else:
                 stream.write(original)
 
             # On every nth iteration append the difference between the level of the source audio and the inverted one
@@ -298,11 +296,19 @@ def invert(data):
     # Convert the bytestring into an integer
     intwave = np.fromstring(data, np.int32)
     # Invert the integer
-    intwave = np.invert(intwave)
+    intwave = np.invert(intwave - 1)
     # Convert the integer back into a bytestring
     inverted = np.frombuffer(intwave, np.byte)
     # Return the inverted audio data
     return inverted
+
+
+def mix_samples(sample_1, sample_2):
+    intwave_sample_1 = np.fromstring(sample_1, np.int16)
+    intwave_sample_2 = np.fromstring(sample_2, np.int16)
+    intwave_mix = (intwave_sample_1 * 0.5 + intwave_sample_2 * 0.5).astype(np.int16)
+    mix = np.frombuffer(intwave_mix, np.byte)
+    return mix
 
 
 def calculate_decibel(data):
