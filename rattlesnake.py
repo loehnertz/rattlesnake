@@ -88,9 +88,6 @@ def file_mode():
             # Invert the original audio
             inverted = invert(original)
 
-            # Calculate the difference of the source and the inverted audio
-            difference = calculate_difference(original, inverted)
-
             # Play back the audio stream of both on every second byte to preserve the original speed of the recording
             if active and iteration % 2 == 0:
                 stream.write(original)
@@ -103,6 +100,8 @@ def file_mode():
             if iteration % NTH_ITERATION == 0:
                 # Clear the terminal before outputting the new value
                 stdscr.clear()
+                # Calculate the difference of the source and the inverted audio
+                difference = calculate_difference(original, inverted)
                 # Print the current difference
                 stdscr.addstr('Difference (in dB): {}\n'.format(difference))
                 # Append the difference to the list used for the plot
@@ -188,9 +187,6 @@ def live_mode():
             # Invert the original audio
             inverted = invert(original)
 
-            # Calculate the difference of the source and the inverted audio
-            difference = calculate_difference(original, inverted)
-
             # Play back the inverted audio
             stream.write(inverted, CHUNK)
 
@@ -198,6 +194,8 @@ def live_mode():
             if i % NTH_ITERATION == 0:
                 # Clear the terminal before outputting the new value
                 stdscr.clear()
+                # Calculate the difference of the source and the inverted audio
+                difference = calculate_difference(original, inverted)
                 # Print the current difference
                 stdscr.addstr('Difference (in dB): {}'.format(difference))
                 # Append the difference to the list used for the plot
