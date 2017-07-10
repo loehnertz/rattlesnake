@@ -83,10 +83,10 @@ def file_mode():
                 active = not active
             # Decrease the ratio of the mix
             elif pressed_key == 43:
-                ratio += 0.1
+                ratio += 0.01
             # Increase the ratio of the mix
             elif pressed_key == 45:
-                ratio -= 0.1
+                ratio -= 0.01
             # If the 'x' key was pressed abort the loop
             elif pressed_key == 120:
                 break
@@ -107,7 +107,7 @@ def file_mode():
                 # Clear the terminal before outputting the new value
                 stdscr.clear()
                 # Calculate the difference of the source and the inverted audio
-                difference = calculate_difference(original, inverted)
+                difference = calculate_difference(original, inverted, ratio)
                 # Print the current difference
                 stdscr.addstr('Difference (in dB): {}\n'.format(difference))
                 # Append the difference to the list used for the plot
@@ -312,15 +312,20 @@ def invert(data):
 
 
 def mix_samples(sample_1, sample_2, ratio):
-    ratio = float(ratio)
-    ratio_1 = ratio / 2
-    ratio_2 = (2 - ratio) / 2
+    (ratio_1, ratio_2) = get_ratios(ratio)
 
     intwave_sample_1 = np.fromstring(sample_1, np.int16)
     intwave_sample_2 = np.fromstring(sample_2, np.int16)
     intwave_mix = (intwave_sample_1 * ratio_1 + intwave_sample_2 * ratio_2).astype(np.int16)
     mix = np.frombuffer(intwave_mix, np.byte)
     return mix
+
+
+def get_ratios(ratio):
+    ratio = float(ratio)
+    ratio_1 = ratio / 2
+    ratio_2 = (2 - ratio) / 2
+    return ratio_1, ratio_2
 
 
 def calculate_decibel(data):
@@ -343,7 +348,7 @@ def calculate_decibel(data):
     return db
 
 
-def calculate_difference(data_1, data_2):
+def calculate_difference(data_1, data_2, ratio):
     """
     Calculates the difference level in decibel between the received binary inputs
 
