@@ -107,13 +107,13 @@ def file_mode():
                 # Clear the terminal before outputting the new value
                 stdscr.clear()
                 # Calculate the difference of the source and the inverted audio
-                difference = calculate_difference(original, inverted, ratio)
+                difference = calculate_difference(original, inverted)
                 # Print the current difference
                 stdscr.addstr('Difference (in dB): {}\n'.format(difference))
                 # Append the difference to the list used for the plot
                 decibel_levels.append(difference)
                 # Calculate the waves for the graph
-                int_original, int_inverted, int_difference = calculate_wave(original, inverted)
+                int_original, int_inverted, int_difference = calculate_wave(original, inverted, ratio)
                 total_original.append(int_original)
                 total_inverted.append(int_inverted)
                 total_difference.append(int_difference)
@@ -348,7 +348,7 @@ def calculate_decibel(data):
     return db
 
 
-def calculate_difference(data_1, data_2, ratio):
+def calculate_difference(data_1, data_2):
     """
     Calculates the difference level in decibel between the received binary inputs
 
@@ -361,17 +361,20 @@ def calculate_difference(data_1, data_2, ratio):
     return difference
 
 
-def calculate_wave(original, inverted):
+def calculate_wave(original, inverted, ratio):
     """
     Converts the bytestrings it receives into plottable integers and calculates the difference between both
 
     :param original: A bytestring of sound
     :param inverted: A bytestring of sound
+    :param ratio: A float which determines the mix-ratio of the two samples
     :return int_original, int_inverted, int_difference: A tupel of the three calculated integers
     """
+
+    (ratio_1, ratio_2) = get_ratios(ratio)
     int_original = np.fromstring(original, np.int16)[0]
     int_inverted = np.fromstring(inverted, np.int16)[0]
-    int_difference = (int_original + int_inverted)
+    int_difference = (int_original * ratio_1 + int_inverted * ratio_2)
 
     return int_original, int_inverted, int_difference
 
