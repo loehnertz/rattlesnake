@@ -65,6 +65,9 @@ def file_mode():
     # Counting the iterations of the while-loop
     iteration = 0
 
+    # Determines the ratio of the mix
+    ratio = 1.0
+
     # Determines if the noise-cancellation is active
     active = True
 
@@ -78,9 +81,14 @@ def file_mode():
             # If the 'o' key was pressed toggle the 'active' variable
             if pressed_key == 111:
                 active = not active
-
+            # Decrease the ratio of the mix
+            elif pressed_key == 43:
+                ratio += 0.1
+            # Increase the ratio of the mix
+            elif pressed_key == 45:
+                ratio -= 0.1
             # If the 'x' key was pressed abort the loop
-            if pressed_key == 120:
+            elif pressed_key == 120:
                 break
 
             # Invert the original audio
@@ -88,7 +96,7 @@ def file_mode():
 
             # Play back the audio stream of both on every second byte to preserve the original speed of the recording
             if active:
-                mix = mix_samples(original, inverted)
+                mix = mix_samples(original, inverted, ratio)
                 stream.write(mix)
             # In case the noise-cancellation is not turned off temporarily, only play the orignial audio source
             else:
@@ -303,10 +311,14 @@ def invert(data):
     return inverted
 
 
-def mix_samples(sample_1, sample_2):
+def mix_samples(sample_1, sample_2, ratio):
+    ratio = float(ratio)
+    ratio_1 = ratio / 2
+    ratio_2 = (2 - ratio) / 2
+
     intwave_sample_1 = np.fromstring(sample_1, np.int16)
     intwave_sample_2 = np.fromstring(sample_2, np.int16)
-    intwave_mix = (intwave_sample_1 * 0.5 + intwave_sample_2 * 0.5).astype(np.int16)
+    intwave_mix = (intwave_sample_1 * ratio_1 + intwave_sample_2 * ratio_2).astype(np.int16)
     mix = np.frombuffer(intwave_mix, np.byte)
     return mix
 
