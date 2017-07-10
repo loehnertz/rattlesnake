@@ -81,10 +81,10 @@ def file_mode():
             # If the 'o' key was pressed toggle the 'active' variable
             if pressed_key == 111:
                 active = not active
-            # Decrease the ratio of the mix
+            # Increase the ratio of the mix
             elif pressed_key == 43:
                 ratio += 0.01
-            # Increase the ratio of the mix
+            # Decrease the ratio of the mix
             elif pressed_key == 45:
                 ratio -= 0.01
             # If the 'x' key was pressed abort the loop
@@ -94,7 +94,7 @@ def file_mode():
             # Invert the original audio
             inverted = invert(original)
 
-            # Play back the audio stream of both on every second byte to preserve the original speed of the recording
+            # Play back a mixed audio stream of both, original source and the inverted one
             if active:
                 mix = mix_samples(original, inverted, ratio)
                 stream.write(mix)
@@ -390,9 +390,12 @@ def calculate_wave(original, inverted, ratio):
     :return int_original, int_inverted, int_difference: A tupel of the three calculated integers
     """
 
+    # Calculate the actual ratios based on the float the function received
     (ratio_1, ratio_2) = get_ratios(ratio)
+    # Convert the two samples to integers to be able to add them together
     int_original = np.fromstring(original, np.int16)[0]
     int_inverted = np.fromstring(inverted, np.int16)[0]
+    # Calculate the difference between the two samples
     int_difference = (int_original * ratio_1 + int_inverted * ratio_2)
 
     return int_original, int_inverted, int_difference
