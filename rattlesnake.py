@@ -393,10 +393,10 @@ def calculate_wave(original, inverted, ratio):
     # Calculate the actual ratios based on the float the function received
     (ratio_1, ratio_2) = get_ratios(ratio)
     # Convert the two samples to integers to be able to add them together
-    int_original = np.fromstring(original, np.int16)[0]
-    int_inverted = np.fromstring(inverted, np.int16)[0]
+    int_original = np.fromstring(original, np.int16)[0] * ratio_1
+    int_inverted = np.fromstring(inverted, np.int16)[0] * ratio_2
     # Calculate the difference between the two samples
-    int_difference = (int_original * ratio_1 + int_inverted * ratio_2)
+    int_difference = (int_original + int_inverted)
 
     return int_original, int_inverted, int_difference
 
