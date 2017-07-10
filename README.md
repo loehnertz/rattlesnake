@@ -35,8 +35,8 @@ Argument        | Description
 --live (-l)     | This is the 'live-mode' which records audio and inverts it on-the-fly. (--mode)
 --file (-f)     | This is the more basic 'file-mode' which expects a wave audio file (.wav) as the third argument. It then plays back the original file as well as the inverted audio to effectively cancel both out. (--mode)
 --playback (-p) | This is the 'playback-mode' that does exactly what one would expect. It can be used to test an existing file. (--mode)
---decibel (-db) | This argument will cause the 'waves' to be plotted at the end. (--result)
---waves (-wv)   | This argument will cause the 'decibels' to be plotted at the end. (--result)
+--decibel (-db) | This argument will cause the 'decibels' to be plotted at the end. (--result)
+--waves (-wv)   | This argument will cause the 'waves' to be plotted at the end. (--result)
 nth_iteration   | This argument is required and needs to be a number. It specifies on which nth iterations data is saved for calculating and plotting the results. The lower the value, the more precise the results.
 
 
