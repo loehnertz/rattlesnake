@@ -334,6 +334,13 @@ def mix_samples(sample_1, sample_2, ratio):
 
 
 def get_ratios(ratio):
+    """
+    Calculates the ratios using a received float
+
+    :param ratio: A float betwenn 0 and 2 resembling the ratio between two things
+    :return ratio_1, ratio_2: The two calculated actual ratios
+    """
+
     ratio = float(ratio)
     ratio_1 = ratio / 2
     ratio_2 = (2 - ratio) / 2
@@ -438,4 +445,5 @@ def plot_wave_results(total_original, total_inverted, total_difference, nth_iter
     plt.show()
 
 
+# Execute the main function to start the script
 main()
