@@ -81,6 +81,11 @@ def file_mode():
             # If the 'o' key was pressed toggle the 'active' variable
             if pressed_key == 111:
                 active = not active
+                # While the noise-cancellation is not activated the ratio should be 100% towards the orginial audio
+                if not active:
+                    ratio = 2.0
+                else:
+                    ratio = 1.0
             # Increase the ratio of the mix
             elif pressed_key == 43:
                 ratio += 0.01
