@@ -444,7 +444,8 @@ def plot_wave_results(total_original, total_inverted, total_difference, nth_iter
     plt.plot(total_difference, 'g')
 
     # Label the axes
-    plt.xlabel('Time (every {}th {} byte)'.format(nth_iteration, CHUNK))
+    plt.xlabel('Time (per {}th {} byte chunk)'.format(nth_iteration, CHUNK))
+    plt.ylabel('Amplitude (integer representation of each {} byte chunk)'.format(nth_iteration, CHUNK))
 
     # Calculate and output the absolute median difference level
     plt.suptitle('Waves: original (blue), inverted (red), output (green)', fontsize=14)
