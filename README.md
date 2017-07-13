@@ -32,8 +32,8 @@ Every argument type only accepts one at a time.
 
 Argument        | Description
 --------        | -----------
---live (-l)     | This is the 'live-mode' which records audio and inverts it on-the-fly. (--mode)
---file (-f)     | This is the more basic 'file-mode' which expects a wave audio file (.wav) as the third argument. It then plays back the original file as well as the inverted audio to effectively cancel both out. (--mode)
+--live (-l)     | This is the 'live-mode' which expects a wave audio file (.wav) as the fourth argument. It then cancels noise captured by a connected microphone while playing back an audio file. This way it functions like noise-cancelling headphones. (--mode)
+--file (-f)     | This is the more basic 'file-mode' which expects a wave audio file (.wav) as the fourth argument. It then plays back the original file as well as the inverted audio to effectively cancel both out. (--mode)
 --playback (-p) | This is the 'playback-mode' that does exactly what one would expect. It can be used to test an existing file. (--mode)
 --decibel (-db) | This argument will cause the 'decibels' to be plotted at the end. (--result)
 --waves (-wv)   | This argument will cause the 'waves' to be plotted at the end. (--result)
