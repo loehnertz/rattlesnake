@@ -26,7 +26,7 @@ Clone the repo and install the requirements via pip:
 
 ## Usage
 Run the python script from your terminal and specify the mode you want to use:    
-`python3 start.py --mode --result nth_iteration filename.wav`    
+`python3 rattlesnake.py --mode --result nth_iteration filename.wav`    
 
 Every argument type only accepts one at a time.
 
