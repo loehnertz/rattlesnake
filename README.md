@@ -23,11 +23,15 @@ the results of the algorithm. It also plots a graph with the results and display
 Clone the repo and install the requirements via pip:    
 `pip install -r requirements.txt`
 
+download curses from the following URL, and install it by pip
+https://www.lfd.uci.edu/~gohlke/pythonlibs/#curses
+`pip install curses`
+
 
 ## Usage
 Run the python script from your terminal and specify the mode you want to use:    
 `python3 rattlesnake.py --mode --result nth_iteration filename.wav`    
-
+`python3 rattlesnake.py --live --waves 5 filename.wav`
 Every argument type only accepts one at a time.
 
 Argument        | Description
