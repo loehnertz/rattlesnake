@@ -19,7 +19,7 @@ pa = pyaudio.PyAudio()
 # The mode the user chose with a script argument
 MODE = sys.argv[1]
 # Size of each read-in chunk
-CHUNK = 1
+CHUNK = 1024
 # Amount of channels of the live recording
 CHANNELS = 2
 # Sample width of the live recording
@@ -212,7 +212,7 @@ def live_mode():
                 # Append the difference to the list used for the plot
                 decibel_levels.append(difference)
                 # Calculate the waves for the graph
-                int_original, int_inverted, int_difference = calculate_wave(original, inverted)
+                int_original, int_inverted, int_difference = calculate_wave(original, inverted, 2)
                 total_original.append(int_original)
                 total_inverted.append(int_inverted)
                 total_difference.append(int_difference)
