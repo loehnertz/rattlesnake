@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "rattlesnake"
+version = "0.1.0"
+description = "A python application that does noise cancellation"
+authors = ["loehnertz <help@jakob.codes>", "yingshaoxo <yingshaoxo@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+cycler = "^0.11.0"
+matplotlib = "^3.6.2"
+pyaudio = "^0.2.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry.scripts]
+main = "rattlesnake:main" # You can call 'hi' in everywhere from your terminal after you install this package

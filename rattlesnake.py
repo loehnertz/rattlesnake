@@ -7,6 +7,20 @@ import pyaudio
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+def get_microphone_channel():
+    the_channel_id = None
+    p = pyaudio.PyAudio()
+    for i in range(p.get_device_count()):
+        device = p.get_device_info_by_index(i)
+        name = str(device.get("name")).lower()
+        index = int(str(device.get("index")))
+        if "microphone" in name:
+            the_channel_id = i
+            break
+    return the_channel_id
+
+
 # 'curses' configuration
 stdscr = curses.initscr()
 stdscr.nodelay(True)
@@ -21,7 +35,7 @@ MODE = sys.argv[1]
 # Size of each read-in chunk
 CHUNK = 1
 # Amount of channels of the live recording
-CHANNELS = 2
+CHANNELS = get_microphone_channel()
 # Sample width of the live recording
 WIDTH = 2
 # Sample rate in Hz of the live recording
@@ -33,6 +47,10 @@ if MODE != '-p' and MODE != '--playback':
     except (ValueError, IndexError):
         print('The second argument has to be a number')
         sys.exit()
+
+
+# Determines the ratio of the mix
+ratio = 1.0
 
 
 def main():
@@ -48,6 +66,7 @@ def main():
 
 
 def file_mode():
+    global ratio
     # Read in the given file
     (waveform, stream) = readin(sys.argv[4])
 
@@ -64,9 +83,6 @@ def file_mode():
 
     # Counting the iterations of the while-loop
     iteration = 0
-
-    # Determines the ratio of the mix
-    ratio = 1.0
 
     # Determines if the noise-cancellation is active
     active = True
@@ -101,8 +117,8 @@ def file_mode():
 
             # Play back a mixed audio stream of both, original source and the inverted one
             if active:
-                mix = mix_samples(original, inverted, ratio)
-                stream.write(mix)
+                mix = mix_samples(original, inverted.tobytes(), ratio)
+                stream.write(mix.tobytes())
             # In case the noise-cancellation is not turned off temporarily, only play the orignial audio source
             else:
                 stream.write(original)
@@ -118,7 +134,7 @@ def file_mode():
                 # Append the difference to the list used for the plot
                 decibel_levels.append(difference)
                 # Calculate the waves for the graph
-                int_original, int_inverted, int_difference = calculate_wave(original, inverted, ratio)
+                int_original, int_inverted, int_difference = calculate_wave(original, inverted.tobytes(), ratio)
                 total_original.append(int_original)
                 total_inverted.append(int_inverted)
                 total_difference.append(int_difference)
@@ -154,6 +170,8 @@ def file_mode():
 
 
 def live_mode():
+    global ratio
+
     # Start live recording
     stdscr.addstr('Now noise-cancelling live')
 
@@ -199,7 +217,7 @@ def live_mode():
             inverted = invert(original)
 
             # Play back the inverted audio
-            stream.write(inverted, CHUNK)
+            stream.write(inverted.tobytes(), CHUNK)
 
             # On every nth iteration append the difference between the level of the source audio and the inverted one
             if i % NTH_ITERATION == 0:
@@ -212,7 +230,7 @@ def live_mode():
                 # Append the difference to the list used for the plot
                 decibel_levels.append(difference)
                 # Calculate the waves for the graph
-                int_original, int_inverted, int_difference = calculate_wave(original, inverted)
+                int_original, int_inverted, int_difference = calculate_wave(original, inverted.tobytes(), ratio=ratio)
                 total_original.append(int_original)
                 total_inverted.append(int_inverted)
                 total_difference.append(int_difference)
@@ -298,7 +316,7 @@ def readin(file):
     return waveform, stream
 
 
-def invert(data):
+def invert(data: bytes):
     """
     Inverts the byte data it received utilizing an XOR operation.
 
@@ -307,7 +325,7 @@ def invert(data):
     """
 
     # Convert the bytestring into an integer
-    intwave = np.fromstring(data, np.int32)
+    intwave = np.frombuffer(data, np.uint8)
     # Invert the integer
     intwave = np.invert(intwave)
     # Convert the integer back into a bytestring
@@ -316,7 +334,7 @@ def invert(data):
     return inverted
 
 
-def mix_samples(sample_1, sample_2, ratio):
+def mix_samples(sample_1: bytes, sample_2: bytes, ratio):
     """
     Mixes two samples into each other
 
@@ -329,8 +347,8 @@ def mix_samples(sample_1, sample_2, ratio):
     # Calculate the actual ratios based on the float the function received
     (ratio_1, ratio_2) = get_ratios(ratio)
     # Convert the two samples to integers
-    intwave_sample_1 = np.fromstring(sample_1, np.int16)
-    intwave_sample_2 = np.fromstring(sample_2, np.int16)
+    intwave_sample_1 = np.frombuffer(sample_1, np.int16)
+    intwave_sample_2 = np.frombuffer(sample_2, np.int16)
     # Mix the two samples together based on the calculated ratios
     intwave_mix = (intwave_sample_1 * ratio_1 + intwave_sample_2 * ratio_2).astype(np.int16)
     # Convert the new mix back to a playable bytestring
@@ -385,7 +403,7 @@ def calculate_difference(data_1, data_2):
     return difference
 
 
-def calculate_wave(original, inverted, ratio):
+def calculate_wave(original: bytes, inverted: bytes, ratio):
     """
     Converts the bytestrings it receives into plottable integers and calculates the difference between both
 
@@ -398,8 +416,8 @@ def calculate_wave(original, inverted, ratio):
     # Calculate the actual ratios based on the float the function received
     (ratio_1, ratio_2) = get_ratios(ratio)
     # Convert the two samples to integers to be able to add them together
-    int_original = np.fromstring(original, np.int16)[0] * ratio_1
-    int_inverted = np.fromstring(inverted, np.int16)[0] * ratio_2
+    int_original = np.frombuffer(original, np.int16)[0] * ratio_1
+    int_inverted = np.frombuffer(inverted, np.int16)[0] * ratio_2
     # Calculate the difference between the two samples
     int_difference = (int_original + int_inverted)
 
