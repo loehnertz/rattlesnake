@@ -24,6 +24,12 @@ _More details soon to follow_
 Clone the repo and install the requirements via pip:  
 `pip install -r requirements.txt`
 
+or
+
+```bash
+poetry install
+```
+
 ## Usage
 
 Run the python script from your terminal and specify the mode you want to use:  
