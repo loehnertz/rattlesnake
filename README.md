@@ -1,6 +1,6 @@
 # rattlesnake
 
-A python application that does noise cancellation
+A python application that does noise cancellation in thoery
 
 ## Motive
 
@@ -21,8 +21,11 @@ _More details soon to follow_
 
 ## Installation
 
-Clone the repo and install the requirements via pip:  
-`pip install -r requirements.txt`
+Clone the repo and install the requirements via pip:
+
+```bash
+pip install -r requirements.txt
+```
 
 or
 
@@ -32,21 +35,13 @@ poetry install
 
 ## Usage
 
-Run the python script from your terminal and specify the mode you want to use:  
-`python3 rattlesnake.py --mode --result nth_iteration filename.wav`
+```
+poetry run rattlesnake
 
-With poetry, for example: `poetry run main --live --waves 44100`
+or
 
-Every argument type only accepts one at a time.
-
-| Argument        | Description                                                                                                                                                                                                                                        |
-| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| --live (-l)     | This is the 'live-mode' which expects a wave audio file (.wav) as the fourth argument. It then cancels noise captured by a connected microphone while playing back an audio file. This way it functions like noise-cancelling headphones. (--mode) |
-| --file (-f)     | This is the more basic 'file-mode' which expects a wave audio file (.wav) as the fourth argument. It then plays back the original file as well as the inverted audio to effectively cancel both out. (--mode)                                      |
-| --playback (-p) | This is the 'playback-mode' that does exactly what one would expect. It can be used to test an existing file. (--mode)                                                                                                                             |
-| --decibel (-db) | This argument will cause the 'decibels' to be plotted at the end. (--result)                                                                                                                                                                       |
-| --waves (-wv)   | This argument will cause the 'waves' to be plotted at the end. (--result)                                                                                                                                                                          |
-| nth_iteration   | This argument is required and needs to be a number. It specifies on which nth iterations data is saved for calculating and plotting the results. The lower the value, the more precise the results.                                                |
+poetry run rattlesnake_callback_version
+```
 
 ## License
 

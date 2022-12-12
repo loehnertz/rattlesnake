@@ -1,19 +1,7 @@
 import sys
+import time
 import pyaudio
 import numpy as np
-
-
-def get_microphone_device_id():
-    the_channel_id = None
-    p = pyaudio.PyAudio()
-    for i in range(p.get_device_count()):
-        device = p.get_device_info_by_index(i)
-        name = str(device.get("name")).lower()
-        index = int(str(device.get("index")))
-        if "microphone" in name:
-            the_channel_id = i
-            break
-    return the_channel_id
 
 
 def print_all_devices():
@@ -63,53 +51,43 @@ def live_mode():
     print_all_devices()
     print()
     input_device_id = int(input("The input device ID is? __"))
+    print("__", end="")
     output_device_id = int(input("The output device ID is? __"))
+    print("__", end="")
 
     # Start live recording
     print('Noise-cancelling is working now...')
     print("Press the ctrl+c to quit.")
 
-    # Create a new PyAudio object using the preset constants
-    input_stream = pa.open(
-        input_device_index=input_device_id,
-        format=pa.get_format_from_width(WIDTH),
-        channels= 1,
-        rate=SAMPLE_RATE,
-        frames_per_buffer=CHUNK,
-        input=True,
-        output=False,
-        # stream_callback = input_callback # type: ignore
-     )
+    def input_callback(in_data, frame_count, time_info, status):
+        # callback function to stream audio, another thread.
+        audio = invert(input_data=in_data)
+        return (audio, pyaudio.paContinue)
 
-    output_stream = pa.open(
+    input_and_output_stream = pa.open(
+        input_device_index=input_device_id,
         output_device_index=output_device_id,
         format=pa.get_format_from_width(WIDTH),
         channels= 1,
         rate=SAMPLE_RATE,
         frames_per_buffer=CHUNK,
-        input=False,
+        input=True,
         output=True,
-    )
+        stream_callback = input_callback # type: ignore
+     )
 
-    # Grab a chunk of data in iterations according to the preset constants
-    try:
-        while True:
-            # Read in a chunk of live audio on each iteration
-            original = input_stream.read(CHUNK, exception_on_overflow=False)
+    while True:
+        try:
+            input_and_output_stream.start_stream()
+            while input_and_output_stream.is_active():
+                time.sleep(1)
+        except (KeyboardInterrupt, SystemExit):
+            # Terminate the program
+            input_and_output_stream.stop_stream()
+            input_and_output_stream.close()
 
-            # Invert the original audio
-            inverted = invert(original)
+            pa.terminate()
+            sys.exit()
 
-            # Play back the inverted audio
-            output_stream.write(inverted.tobytes(), CHUNK)
 
-    except (KeyboardInterrupt, SystemExit):
-        # Terminate the program
-        input_stream.stop_stream()
-        input_stream.close()
-
-        output_stream.stop_stream()
-        output_stream.close()
-
-        pa.terminate()
-        sys.exit()
+live_mode()

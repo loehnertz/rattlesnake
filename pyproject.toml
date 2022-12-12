@@ -11,6 +11,7 @@ python = "^3.10"
 cycler = "^0.11.0"
 matplotlib = "^3.6.2"
 pyaudio = "^0.2.12"
+wave = "^0.0.2"
 
 
 [build-system]
@@ -19,4 +20,5 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.poetry.scripts]
-main = "rattlesnake:main" # You can call 'hi' in everywhere from your terminal after you install this package
+rattlesnake = "rattlesnake:live_mode" # You can call 'live_mode' in everywhere from your terminal in the poetry shell
+rattlesnake_callback_version = "rattlesnake_callback_version:live_mode" 

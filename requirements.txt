@@ -1,10 +1,4 @@
-cycler==0.10.0
-functools32==3.2.3.post2
-matplotlib==2.0.2
-numpy==1.13.0
-PyAudio==0.2.11
-pyparsing==2.2.0
-python-dateutil==2.6.0
-pytz==2017.2
-six==1.10.0
-subprocess32==3.2.7
+cycler
+matplotlib
+numpy
+PyAudio
